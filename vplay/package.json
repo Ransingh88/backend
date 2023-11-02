@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "A backend on videoplayer app.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/index.js"
   },
   "keywords": [
     "videoplayer",
@@ -12,5 +13,9 @@
     "streamingapp"
   ],
   "author": "debasishransingh",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.3"
+  }
 }
