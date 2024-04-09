@@ -12,14 +12,22 @@ cloudinary.config({
   api_secret: CLOUDINARY_API_SECRET,
 });
 
-const uploadOnCloudinary = async (localFilePath) => {
+const uploadOnCloudinary = async (localFilePath, subFolderName) => {
   try {
     if (!localFilePath) {
       return null;
     }
+    let folderPath;
+
+    if (!subFolderName) {
+      folderPath = "vplay";
+    } else {
+      folderPath = `vplay/${subFolderName}`;
+    }
     // upload the file on cloudinary
     const response = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "auto",
+      folder: folderPath,
     });
     //   file has been uploaded successfully
     // console.log("file is uploaded on cloudinary", response.url);
