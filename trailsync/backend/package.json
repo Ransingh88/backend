@@ -1,0 +1,20 @@
+{
+  "name": "trailsync",
+  "version": "1.0.0",
+  "description": "a group rider application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "live",
+    "map",
+    "rider",
+    "chat",
+    "trip",
+    "roadtrip",
+    "grouptrip"
+  ],
+  "author": "debasish_ransingh",
+  "license": "ISC"
+}
