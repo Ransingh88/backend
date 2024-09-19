@@ -1,3 +1,0 @@
-# Trailsync
-
-- Docs
