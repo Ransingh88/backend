@@ -1,1 +1,1 @@
-export const DB_NAME = "trailsync";
+export const DB_NAME = process.env.DB_NAME || "trailsync-temp";
