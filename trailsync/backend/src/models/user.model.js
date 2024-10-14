@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      required: true,
+      required: [true, "username is required"],
       unique: true,
       lowercase: true,
       trim: true,
@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "email is required"],
       unique: true,
       lowercase: true,
       trim: true,
@@ -45,12 +45,14 @@ const userSchema = new mongoose.Schema(
   },
 );
 
-userSchema.pre("save", function () {
-  if (!this.password.isModified()) return next();
-  this.password = bcrypt.hash(this.password, 10);
+// password encryption
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
+// password compare
 userSchema.methods.passwordValidate = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
@@ -58,7 +60,7 @@ userSchema.methods.passwordValidate = async function (password) {
 userSchema.methods.generateAccessToken = function () {
   const token = jwt.sign(
     { _id: this._id, email: this.email, fullName: this.fullName },
-    process.env.ACCESS_TOKEN_KEY,
+    process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRY },
   );
   return token;
