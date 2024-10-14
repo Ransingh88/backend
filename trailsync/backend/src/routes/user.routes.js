@@ -1,9 +1,13 @@
 import { Router } from "express";
 import {
+  deleteUserAccount,
+  getUserDetails,
   loginUser,
   logoutUser,
   refreshAccessToken,
   registerUser,
+  updateUserAccountDetails,
+  updateUserPassword,
 } from "../controllers/user.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -15,5 +19,9 @@ router.route("/login").post(loginUser);
 // secured routes
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/refreshAccessToken").post(refreshAccessToken);
+router.route("/updatePassword").post(verifyJWT, updateUserPassword);
+router.route("/me").get(verifyJWT, getUserDetails);
+router.route("/updateAcountDetails").patch(verifyJWT, updateUserAccountDetails);
+router.route("/deleteAcount").delete(verifyJWT, deleteUserAccount);
 
 export default router;

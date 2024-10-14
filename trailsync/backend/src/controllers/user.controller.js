@@ -4,6 +4,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 
+// generate access and refresh token at a time - helper
 const generateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -22,6 +23,7 @@ const generateAccessAndRefreshToken = async (userId) => {
   }
 };
 
+// registering / create user
 const registerUser = asyncHandler(async (req, res) => {
   const { username, email, fullName, password, role } = req.body;
 
@@ -52,6 +54,7 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, createdUser, "user registred successfully"));
 });
 
+// logging in user
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -98,6 +101,7 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
+// logging out user
 const logoutUser = asyncHandler(async (req, res, next) => {
   await User.findByIdAndUpdate(
     req?.user._id,
@@ -117,6 +121,7 @@ const logoutUser = asyncHandler(async (req, res, next) => {
     .json(new ApiResponse(200, {}, "user logged out successfully"));
 });
 
+// refresh access token - auto generate accesstoken
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken =
     req.cookies?.refreshToken || req.body?.refreshToken;
@@ -161,4 +166,101 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     );
 });
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken };
+// chnage current user password
+const updateUserPassword = asyncHandler(async (req, res) => {
+  const { oldPassword, newPassword, confirmPassword } = req.body;
+
+  if (!oldPassword && !newPassword && !confirmPassword) {
+    throw new ApiError(400, "all fields are required");
+  }
+
+  if (newPassword !== confirmPassword) {
+    throw new ApiError(400, "new and confirm password doesn't match");
+  }
+
+  if (oldPassword === newPassword) {
+    throw new ApiError(400, "new and old password should not be same");
+  }
+
+  const user = await User.findById(req?.user?._id);
+
+  const isPasswordValid = await user.passwordValidate(oldPassword);
+
+  if (!isPasswordValid) {
+    throw new ApiError(400, "invalid old password");
+  }
+
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, {}, "password updated successfully"));
+});
+
+// get current user details
+const getUserDetails = asyncHandler(async (req, res) => {
+  res
+    .status(200)
+    .json(new ApiResponse(200, req.user, "user details fetched successfully"));
+});
+
+const updateUserAccountDetails = asyncHandler(async (req, res) => {
+  const { fullName, username, email } = req.body;
+
+  if (!fullName && !username && !email) {
+    throw new ApiError(400, "all fields are required");
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        fullName,
+        email,
+        username,
+      },
+    },
+    { new: true },
+  ).select("-password -refreshToken");
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, user, "user details updated successfully"));
+});
+
+const deleteUserAccount = asyncHandler(async (req, res) => {
+  const { confirmDetele } = req.body;
+
+  if (!confirmDetele) {
+    throw new ApiError(400, "detlete key field is required");
+  }
+
+  if (confirmDetele !== `delete/${req.user?.username}`) {
+    throw new ApiError(400, "key doesn't match");
+  }
+
+  await User.findByIdAndDelete(req.user?._id);
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "account deleted succesfully"));
+});
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  updateUserPassword,
+  getUserDetails,
+  updateUserAccountDetails,
+  deleteUserAccount,
+};
