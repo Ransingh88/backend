@@ -205,6 +205,18 @@ const getUserDetails = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, req.user, "user details fetched successfully"));
 });
 
+const getAllUser = asyncHandler(async (req, res) => {
+  const users = await User.find({ _id: { $ne: req.user?._id } });
+
+  if (!users) {
+    throw new ApiError(404, "no user found");
+  }
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, users, "all user fetched successfully"));
+});
+
 const updateUserAccountDetails = asyncHandler(async (req, res) => {
   const { fullName, username, email } = req.body;
 
@@ -263,4 +275,5 @@ export {
   getUserDetails,
   updateUserAccountDetails,
   deleteUserAccount,
+  getAllUser,
 };

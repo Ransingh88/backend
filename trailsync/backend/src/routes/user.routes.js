@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   deleteUserAccount,
+  getAllUser,
   getUserDetails,
   loginUser,
   logoutUser,
@@ -9,7 +10,7 @@ import {
   updateUserAccountDetails,
   updateUserPassword,
 } from "../controllers/user.controller.js";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { authorizedRoles, verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -23,5 +24,6 @@ router.route("/updatePassword").post(verifyJWT, updateUserPassword);
 router.route("/me").get(verifyJWT, getUserDetails);
 router.route("/updateAcountDetails").patch(verifyJWT, updateUserAccountDetails);
 router.route("/deleteAcount").delete(verifyJWT, deleteUserAccount);
+router.route("/allUser").get(verifyJWT, authorizedRoles(["admin"]), getAllUser);
 
 export default router;
