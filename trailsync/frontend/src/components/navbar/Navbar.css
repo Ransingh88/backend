@@ -1,0 +1,11 @@
+.navbar {
+  @apply bg-gray-100 h-16 px-6 py-2 flex justify-between items-center;
+
+  & > .navbar__logo {
+    @apply text-xl font-semibold;
+  }
+
+  & > .navbar__menu {
+    @apply flex justify-center items-center gap-4 font-normal text-gray-500;
+  }
+}

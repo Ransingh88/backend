@@ -1,0 +1,42 @@
+.login {
+  @apply font-Roboto w-full h-screen flex items-center justify-center bg-[#E1E1E1];
+
+  & .login__box {
+    @apply w-4/6 h-5/6 bg-[#FFFFFF] rounded-lg p-3 drop-shadow-xl flex justify-center items-center gap-2;
+
+    & .login__img {
+      @apply w-1/2 h-full bg-[#f5f5f5] rounded-md overflow-hidden;
+
+      & img {
+        @apply w-full h-full object-cover block;
+      }
+    }
+
+    & .login__content {
+      @apply w-1/2 h-full bg-[#fcfcfc] p-6 flex flex-col justify-center items-center pb-1;
+
+      & p {
+        @apply text-sm font-Roboto text-gray-400 font-thin;
+      }
+
+      & .logo {
+        @apply w-8 h-8 rounded-full bg-[#14151A] mb-3;
+      }
+
+      & .login__header {
+        @apply text-base font-semibold;
+      }
+      & .login__form {
+        @apply w-2/3 flex flex-col gap-2 justify-center items-center my-4;
+
+        & input {
+          @apply w-full bg-[#fcfcfc] border p-1 px-2 text-sm rounded-lg;
+        }
+
+        button {
+          @apply bg-[#14151A] text-sm capitalize p-1 rounded-lg w-full text-gray-50 hover:bg-gray-900;
+        }
+      }
+    }
+  }
+}
