@@ -58,7 +58,19 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  if (!(email && password) && !(email == "" && password == "")) {
+  const token =
+    req.cookies?.accessToken ||
+    req.header("Authorization")?.replace("Bearer ", "");
+
+  if (token) {
+    throw new ApiError(403, "one user already logged in");
+  }
+
+  if (email == "" && password == "") {
+    throw new ApiError(400, "all fiels are required");
+  }
+
+  if (!(email && password)) {
     throw new ApiError(400, "all fiels are required");
   }
 
