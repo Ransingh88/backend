@@ -62,10 +62,6 @@ const loginUser = asyncHandler(async (req, res) => {
     req.cookies?.accessToken ||
     req.header("Authorization")?.replace("Bearer ", "");
 
-  if (token) {
-    throw new ApiError(403, "one user already logged in");
-  }
-
   if (email == "" && password == "") {
     throw new ApiError(400, "all fiels are required");
   }
@@ -113,6 +109,10 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
+const verifyAuth = asyncHandler((req, res) => {
+  res.status(200).json(new ApiResponse(200, req.user, "user authenticated"));
+});
+
 // logging out user
 const logoutUser = asyncHandler(async (req, res, next) => {
   await User.findByIdAndUpdate(
@@ -157,9 +157,10 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     throw new ApiError(401, "invalid refresh token");
   }
 
-  const { accessToken, newRefreshToken } = generateAccessAndRefreshToken(
-    user._id,
-  );
+  const { accessToken, refreshToken: newRefreshToken } =
+    await generateAccessAndRefreshToken(user._id);
+
+  console.log(accessToken, newRefreshToken, "]]]]]]]]");
   const options = {
     httpOnly: true,
     secure: true,
@@ -281,6 +282,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 export {
   registerUser,
   loginUser,
+  verifyAuth,
   logoutUser,
   refreshAccessToken,
   updateUserPassword,

@@ -1,17 +1,20 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "../../config/axiosConfig";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../redux/features/auth/authSlice";
 
 const Navbar = () => {
-  const [userDetails, setUserDetails] = useState();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   const handleLogout = async () => {
     try {
       const res = await axios.post("/user/logout");
-      localStorage.removeItem("loginUserDetails");
-
+      dispatch(logout());
       toast.success(res.data.message);
     } catch (error) {
       toast.error(error.response.data.message);
@@ -19,17 +22,15 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const data = localStorage.getItem("loginUserDetails");
-    setUserDetails(JSON.parse(data));
-    console.log(JSON.parse(data), "navbar dataaaa");
-  }, []);
+    if (isAuthenticated) navigate("/");
+  }, [isAuthenticated, navigate]);
   return (
     <div className="navbar">
       <Link to="/" className="navbar__logo">
         trailsync
       </Link>
       <div>
-        {!userDetails ? (
+        {!isAuthenticated ? (
           <ul className="navbar__menu">
             <li>
               <NavLink to="/login">sign in</NavLink>
@@ -40,7 +41,7 @@ const Navbar = () => {
           </ul>
         ) : (
           <>
-            <p>{userDetails.fullName}</p>
+            <p>{user?.fullName}</p>
             <button onClick={handleLogout}>Logout</button>
           </>
         )}

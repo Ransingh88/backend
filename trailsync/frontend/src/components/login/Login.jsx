@@ -4,19 +4,19 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import loginbgimg from "../../assets/loginbg.jpg";
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/features/auth/authSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
 
   const handleLogin = async () => {
     try {
       const res = await axios.post("/user/login", { email, password });
+      dispatch(login(res.data?.data?.user));
       toast.success(res.data.message);
-      localStorage.setItem(
-        "loginUserDetails",
-        JSON.stringify(res.data?.data?.user)
-      );
       console.log(res);
     } catch (error) {
       console.log(error);
@@ -24,16 +24,16 @@ const Login = () => {
     }
   };
 
-  const handleShowData = async () => {
-    try {
-      const res = await axios.get("/user/allUser");
-      console.log(res);
-      toast.success(res.data.message);
-    } catch (error) {
-      console.log(error);
-      toast.error(error.response.data.message);
-    }
-  };
+  // const handleShowData = async () => {
+  //   try {
+  //     const res = await axios.get("/user/allUser");
+  //     console.log(res);
+  //     toast.success(res.data.message);
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error(error.response.data.message);
+  //   }
+  // };
   return (
     <div className="login">
       <div className="login__box">
@@ -59,7 +59,7 @@ const Login = () => {
             <button onClick={handleLogin}>login</button>
           </div>
           <span className="text-sm">
-            Don't have an account?
+            Don&apos;t have an account?
             <Link to="/register" className="link">
               Register
             </Link>

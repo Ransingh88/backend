@@ -9,6 +9,7 @@ import {
   registerUser,
   updateUserAccountDetails,
   updateUserPassword,
+  verifyAuth,
 } from "../controllers/user.controller.js";
 import { authorizedRoles, verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -18,6 +19,7 @@ router.route("/register").post(registerUser);
 router.route("/login").post(loginUser);
 
 // secured routes
+router.route("/checkAuth").get(verifyJWT, verifyAuth);
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/refreshAccessToken").post(refreshAccessToken);
 router.route("/updatePassword").post(verifyJWT, updateUserPassword);
