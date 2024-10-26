@@ -91,6 +91,7 @@ const loginUser = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: true,
     sameSite: "None",
+    maxAge: 24 * 60 * 60 * 1000,
   };
 
   const loggedinUser = await User.findById(user._id).select(
@@ -126,6 +127,7 @@ const logoutUser = asyncHandler(async (req, res, next) => {
     httpOnly: true,
     secure: true,
     sameSite: "None",
+    maxAge: 24 * 60 * 60 * 1000,
   };
 
   res
@@ -162,11 +164,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken: newRefreshToken } =
     await generateAccessAndRefreshToken(user._id);
 
-  console.log(accessToken, newRefreshToken, "]]]]]]]]");
   const options = {
     httpOnly: true,
     secure: true,
     sameSite: "None",
+    maxAge: 24 * 60 * 60 * 1000,
   };
 
   res
@@ -274,6 +276,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: true,
     sameSite: "None",
+    maxAge: 24 * 60 * 60 * 1000,
   };
 
   res
