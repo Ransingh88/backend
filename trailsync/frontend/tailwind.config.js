@@ -4,7 +4,10 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        Roboto: ["Roboto", "sans-serif"],
+        // Roboto: ["Roboto", "sans-serif"],
+        // Outfit: ["Outfit", "sans-serif"],
+        Poppins: ["Poppins", "sans-serif"],
+        Inter: ["Inter", "sans-serif"],
       },
     },
   },

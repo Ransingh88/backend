@@ -1,7 +1,10 @@
+import { useSelector } from "react-redux";
+
 const Home = () => {
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   return (
     <div>
-      <h1>trailsync</h1>
+      {isAuthenticated && <h1>Welcome back, {user.fullName.split(" ")[0]}</h1>}
     </div>
   );
 };

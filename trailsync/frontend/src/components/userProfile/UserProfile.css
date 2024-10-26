@@ -1,0 +1,31 @@
+.userProfile {
+  @apply relative inline-block;
+
+  & > img {
+    @apply w-12 h-12 rounded-full cursor-pointer;
+  }
+
+  & > .userProfile__menu {
+    @apply w-72 bg-[#f8f8fa] shadow-lg p-4 m-2 flex flex-col gap-6 justify-between items-start rounded-lg border border-[#e3e4e7] absolute top-12 -right-2;
+
+    & > .userProfile__menu--sec1 {
+      @apply flex items-center justify-between gap-4;
+
+      & > img {
+        @apply w-14 h-14 rounded-full;
+      }
+
+      & > div {
+        & h5 {
+          @apply text-gray-700 capitalize font-semibold;
+        }
+        & p {
+          @apply text-gray-500 text-sm lowercase;
+        }
+      }
+    }
+    & > .userProfile__menu--sec2 ul {
+      @apply flex flex-col items-start justify-start gap-1 ml-2 text-gray-500 font-medium capitalize;
+    }
+  }
+}

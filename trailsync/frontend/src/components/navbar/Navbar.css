@@ -1,11 +1,25 @@
 .navbar {
-  @apply bg-gray-100 h-16 px-6 py-2 flex justify-between items-center;
+  @apply bg-[#f8f8fa] top-0 left-0 h-screen w-1/6 flex flex-col justify-between items-start flex-shrink-0 p-4 py-6 border border-r-[#e3e4e7];
 
   & > .navbar__logo {
     @apply text-xl font-semibold;
   }
 
+  & .menuActive {
+    @apply text-[#625af2];
+  }
+  & .menuPending {
+    @apply bg-red-500 text-yellow-500;
+  }
+
   & > .navbar__menu {
-    @apply flex justify-center items-center gap-4 font-normal text-gray-500;
+    @apply flex flex-col gap-8 p-4 font-medium capitalize text-gray-400;
+
+    & > .navbar__menuSection span {
+      @apply text-sm;
+    }
+    & > .navbar__menuSection ul {
+      @apply text-gray-500 flex flex-col gap-2 ml-4 mt-2;
+    }
   }
 }

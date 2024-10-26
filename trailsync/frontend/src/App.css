@@ -1,5 +1,20 @@
 /* @import "./components/navbar/Navbar.css"; */
+::-webkit-scrollbar {
+  display: none;
+}
 
+body {
+  @apply font-Poppins box-border;
+}
 .link {
   @apply text-sm font-semibold capitalize hover:cursor-pointer;
+}
+.btn {
+  @apply px-3 py-1 flex gap-2 items-center justify-center rounded-lg hover:cursor-pointer;
+}
+.btn-primary {
+  @apply text-white bg-[#625af2];
+}
+.btn-danger {
+  @apply text-red-500 bg-red-100;
 }

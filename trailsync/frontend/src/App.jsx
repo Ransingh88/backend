@@ -9,7 +9,11 @@ function App() {
   return (
     <>
       <Route />
-      <ToastContainer position="top-right" theme={"light"} />
+      <ToastContainer
+        position="bottom-center"
+        autoClose="2000"
+        theme={"light"}
+      />
     </>
   );
 }
