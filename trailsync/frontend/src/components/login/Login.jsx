@@ -13,27 +13,29 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const handleLogin = async () => {
+    const id = toast.loading("logging...");
     try {
       const res = await axios.post("/user/login", { email, password });
       dispatch(login(res.data?.data?.user));
-      toast.success(res.data.message);
-      console.log(res);
+      // toast.success(res.data.message);
+      toast.update(id, {
+        render: res.data.message,
+        type: "success",
+        autoClose: true,
+        isLoading: false,
+      });
+      // console.log(res);
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message);
+      // toast.error(error.response.data.message);
+      toast.update(id, {
+        render: error.response.data.message,
+        type: "error",
+        autoClose: true,
+        isLoading: false,
+      });
     }
   };
-
-  // const handleShowData = async () => {
-  //   try {
-  //     const res = await axios.get("/user/allUser");
-  //     console.log(res);
-  //     toast.success(res.data.message);
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast.error(error.response.data.message);
-  //   }
-  // };
   return (
     <div className="login">
       <div className="login__box">
