@@ -3,8 +3,12 @@
   display: none;
 }
 
+html {
+  font-size: 80%;
+}
+
 body {
-  @apply font-Poppins box-border;
+  @apply font-Poppins text-base box-border;
 }
 .link {
   @apply text-sm font-semibold capitalize hover:cursor-pointer;

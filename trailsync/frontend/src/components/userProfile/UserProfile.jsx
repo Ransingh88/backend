@@ -52,7 +52,7 @@ const UserProfile = () => {
           <div className="userProfile__menu--sec1">
             <img src="https://via.placeholder.com/40" alt="user profile" />{" "}
             <div>
-              <h6>{user.fullName}</h6>
+              <h5>{user.fullName}</h5>
               <p>{user.email}</p>
               <p>
                 Role : {user.role} | un: {user.username}

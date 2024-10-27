@@ -6,20 +6,27 @@
   }
 
   & .menuActive {
-    @apply text-[#625af2];
+    @apply text-[#625af2] bg-[#efeefa]  rounded-md;
   }
   & .menuPending {
     @apply bg-red-500 text-yellow-500;
   }
 
   & > .navbar__menu {
-    @apply flex flex-col gap-8 p-4 font-medium capitalize text-gray-400;
+    @apply w-full flex flex-col gap-4 p-4 font-medium capitalize text-gray-400;
 
     & > .navbar__menuSection span {
-      @apply text-sm;
+      @apply text-xs;
     }
     & > .navbar__menuSection ul {
-      @apply text-gray-500 flex flex-col gap-2 ml-4 mt-2;
+      @apply text-gray-500 flex flex-col  mt-1;
+
+      & li {
+        @apply bg-green-500;
+      }
+      & a {
+        @apply px-4 p-0.5;
+      }
     }
   }
 }

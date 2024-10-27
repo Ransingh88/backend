@@ -4,7 +4,7 @@ const Home = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   return (
     <div>
-      {isAuthenticated && <h1>Welcome back, {user.fullName.split(" ")[0]}</h1>}
+      {isAuthenticated && <h3>Welcome back, {user.fullName.split(" ")[0]}</h3>}
     </div>
   );
 };

@@ -1,0 +1,45 @@
+.members {
+  @apply p-4 w-full;
+
+  & > .members__table {
+    @apply rounded-lg;
+    & > table {
+      @apply border rounded-md w-full border-separate table-auto;
+
+      & th {
+        @apply bg-[#f0f2f5] border-b text-left text-sm text-gray-500 px-4 py-2 font-medium capitalize;
+      }
+      & > th,
+      td {
+        @apply px-4 py-2;
+      }
+      /* & > tr {
+        @apply border bg-red-400;
+      } */
+    }
+
+    & .members__table--userDetail {
+      @apply flex items-center justify-start gap-4;
+
+      & > img {
+        @apply w-10 h-10 rounded-full;
+      }
+
+      & > div {
+        & h5 {
+          @apply text-gray-700 capitalize text-base;
+        }
+        & p {
+          @apply text-gray-500 text-xs lowercase;
+        }
+      }
+    }
+  }
+}
+
+.online {
+  @apply text-sm bg-green-200 text-green-500 rounded-lg px-2 py-1;
+}
+.offline {
+  @apply text-sm bg-gray-200 text-gray-500 rounded-lg px-2 py-1;
+}

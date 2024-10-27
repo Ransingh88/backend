@@ -45,16 +45,17 @@ const Navbar = () => {
             <span>{menuSection.menuTitle}</span>
             <ul>
               {filterMenu(menuSection.menus).map((menuItem, indx) => (
-                <li key={indx}>
-                  <NavLink
-                    to={menuItem.path}
-                    className={({ isActive, isPending }) =>
-                      isActive ? "menuActive" : isPending ? "menuPending" : ""
-                    }
-                  >
-                    {menuItem.title}
-                  </NavLink>
-                </li>
+                // <li >
+                <NavLink
+                  key={indx}
+                  to={menuItem.path}
+                  className={({ isActive, isPending }) =>
+                    isActive ? "menuActive" : isPending ? "menuPending" : ""
+                  }
+                >
+                  {menuItem.title}
+                </NavLink>
+                // </li>
               ))}
             </ul>
           </div>

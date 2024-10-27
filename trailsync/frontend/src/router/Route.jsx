@@ -5,6 +5,7 @@ import Register from "../components/register/Register";
 import Layout from "../components/layout/Layout";
 import Error from "../pages/Error";
 import Statistics from "../pages/Statistics";
+import Members from "../pages/members/Members";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "/statistics",
         element: <Statistics />,
+      },
+      {
+        path: "/members",
+        element: <Members />,
       },
     ],
   },

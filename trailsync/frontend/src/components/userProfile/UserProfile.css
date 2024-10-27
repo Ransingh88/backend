@@ -17,10 +17,10 @@
 
       & > div {
         & h5 {
-          @apply text-gray-700 capitalize font-semibold;
+          @apply text-gray-700 capitalize text-base font-semibold;
         }
         & p {
-          @apply text-gray-500 text-sm lowercase;
+          @apply text-gray-500 text-xs lowercase;
         }
       }
     }

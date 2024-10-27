@@ -7,6 +7,7 @@ export const constant = {
           title: "overview",
           path: "/overview",
           role: ["all"],
+          icon: "HiOutlineViewGrid",
         },
         {
           title: "booking",
@@ -49,6 +50,16 @@ export const constant = {
       menuTitle: "engagement",
       menus: [
         {
+          title: "dashboard",
+          path: "/dashboard",
+          role: ["admin"],
+        },
+        {
+          title: "admin",
+          path: "/admin",
+          role: ["admin"],
+        },
+        {
           title: "statistics",
           path: "/statistics",
           role: ["admin"],
@@ -57,6 +68,11 @@ export const constant = {
           title: "reward",
           path: "/reward",
           role: ["all"],
+        },
+        {
+          title: "members",
+          path: "/members",
+          role: ["admin"],
         },
       ],
     },
