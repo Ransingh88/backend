@@ -22,3 +22,11 @@ body {
 .btn-danger {
   @apply text-red-500 bg-red-100;
 }
+
+.mpppp {
+  /* margin: 2rem; */
+  /* padding: 1rem; */
+  border: 1px solid red;
+  height: 90vh;
+  width: 100%;
+}

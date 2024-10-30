@@ -2,10 +2,35 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
 dotenv.config({ path: "./.env" });
 
 export const app = express();
+
+export const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("new client connected: ", socket.id);
+
+  socket.on("sendLocation", (locationData) => {
+    console.log("data: ", locationData);
+    io.emit("updateLocation", locationData);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("client disconnected :", socket.id);
+
+    io.emit("removeLocation", socket.id);
+  });
+});
 
 // configs
 app.use(
