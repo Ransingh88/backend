@@ -18,11 +18,11 @@ const Location = ({ userDetails }) => {
   const [currentPosition, setCurrentPosition] = useState(null);
   const [locations, setLocations] = useState([]);
   const [watchId, setWatchId] = useState(null);
-  //   const [recount, setReCount] = useState(0);
+  const [recount, setReCount] = useState(0);
 
   //   console.log("userDetails--", userDetails);
   //   console.log("locations--", locations);
-  //   console.warn("+++++componet Rerenders++++++", recount);
+  console.warn("+++++componet Rerenders++++++", recount);
 
   const g_options = {
     enableHighAccuracy: true,
