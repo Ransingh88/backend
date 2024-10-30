@@ -121,9 +121,7 @@ const Location = ({ userDetails }) => {
           {currentPosition && (
             <>
               <Marker position={[currentPosition.lat, currentPosition.lng]}>
-                <Popup>
-                  A pretty CSS3 popup. <br /> Easily customizable.
-                </Popup>
+                <Popup>{location.userDetails}</Popup>
               </Marker>
               <FlyMapTo />
             </>
@@ -132,7 +130,7 @@ const Location = ({ userDetails }) => {
             (location, indx) =>
               location.id && (
                 <Marker key={indx} position={[location.lat, location.lng]}>
-                  <Popup>{location.id}</Popup>
+                  <Popup>{location.userDetails}</Popup>
                 </Marker>
               )
           )}
