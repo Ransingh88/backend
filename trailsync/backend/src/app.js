@@ -4,6 +4,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { ApiError } from "./utils/ApiError.js";
 
 dotenv.config({ path: "./.env" });
 
@@ -12,21 +15,56 @@ export const app = express();
 export const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "*",
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
     methods: ["GET", "POST"],
   },
 });
 
+let onlineUsers = {};
+
+io.use((socket, next) => {
+  const token = socket.request.headers.cookie
+    ? cookie.parse(socket.request.headers.cookie).accessToken
+    : null;
+
+  // if (!token) {
+  //   throw new ApiError(401, "unauthorized token! please login to access");
+  // }
+
+  if (token) {
+    const decodedJWT = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    socket.userId = decodedJWT._id;
+    // console.log("socket", socket.userId, socket.id);
+    next();
+  }
+});
+
 io.on("connection", (socket) => {
-  console.log("new client connected: ", socket.id);
+  console.log("client connected: ", socket.id);
+  console.log("onlineUsers: ", onlineUsers);
+
+  socket.on("userConnected", (userId) => {
+    console.log("userConnected", userId);
+    onlineUsers[userId] = socket.id;
+    io.emit("onlineUsers", Object.keys(onlineUsers));
+  });
 
   socket.on("sendLocation", (locationData) => {
-    console.log("data: ", locationData);
+    // console.log("data: ", locationData);
     io.emit("updateLocation", locationData);
   });
 
   socket.on("disconnect", () => {
-    console.log("client disconnected :", socket.id);
+    console.log("client disconnected X-:", socket.id);
+
+    for (let userId in onlineUsers) {
+      if (onlineUsers[userId] === socket.id) {
+        delete onlineUsers[userId];
+        break;
+      }
+    }
+    io.emit("onlineUsers", Object.keys(onlineUsers));
 
     io.emit("removeLocation", socket.id);
   });

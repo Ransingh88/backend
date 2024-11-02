@@ -2,15 +2,21 @@ import "./Members.css";
 import { useEffect, useState } from "react";
 import axios from "../../config/axiosConfig";
 import { HiOutlineDotsVertical, HiOutlinePencilAlt } from "react-icons/hi";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser } from "../../redux/features/auth/userSlice";
 
 const Members = () => {
-  const [userData, setUserData] = useState([]);
+  // const [userData, setUserData] = useState([]);
+  const dispatch = useDispatch();
+  const { users } = useSelector((state) => state.user);
   useEffect(() => {
     const getAllUserDetails = async () => {
       const res = await axios.get("/user/allUser");
-      setUserData(res.data.data);
+      // setUserData(res.data.data);
+      dispatch(addUser(res.data.data));
     };
     getAllUserDetails();
+    console.log(users);
   }, []);
   return (
     <div className="members">
@@ -30,7 +36,7 @@ const Members = () => {
             </tr>
           </thead>
           <tbody>
-            {userData.map((user, indx) => (
+            {users?.map((user, indx) => (
               <tr key={indx}>
                 <td>
                   <div className="members__table--userDetail">
@@ -47,7 +53,9 @@ const Members = () => {
                 <td>{user.username}</td>
                 <td>{user.role}</td>
                 <td>
-                  <span className="offline">offline</span>
+                  <span className={user?.status ? "online" : "offline"}>
+                    {user?.status ? "Online" : "Offline"}
+                  </span>
                 </td>
                 <td>{user.updatedAt}</td>
                 <td>

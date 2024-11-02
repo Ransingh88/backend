@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import { socket } from "../../utils/socket";
 import "leaflet/dist/leaflet.css";
+import { useDispatch } from "react-redux";
+import { updateStatus } from "../../redux/features/auth/userSlice";
 
 // interface LocationProp {
 //     userDetails:string
@@ -19,6 +21,8 @@ const Location = ({ userDetails }) => {
   const [locations, setLocations] = useState([]);
   const [watchId, setWatchId] = useState(null);
   const [recount, setReCount] = useState(0);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const dispatch = useDispatch();
 
   //   console.log("userDetails--", userDetails);
   //   console.log("locations--", locations);
@@ -84,6 +88,13 @@ const Location = ({ userDetails }) => {
       setWatchId(id);
     }
 
+    socket.emit("userConnected", userDetails?._id);
+
+    socket.on("onlineUsers", (onlineUsers) => {
+      console.log("onlineUsers: ", onlineUsers);
+      dispatch(updateStatus(onlineUsers));
+    });
+
     socket.on("updateLocation", handleUpdateLocation);
     socket.on("removeLocation", handleRemoveLocation);
 
@@ -105,7 +116,7 @@ const Location = ({ userDetails }) => {
             (location, indx) =>
               location.id && (
                 <li key={indx}>
-                  {location.userDetails} - {location.id}
+                  {location.userDetails.fullName} - {location.id}
                 </li>
               )
           )}
@@ -121,7 +132,7 @@ const Location = ({ userDetails }) => {
           {currentPosition && (
             <>
               <Marker position={[currentPosition.lat, currentPosition.lng]}>
-                <Popup>{location.userDetails}</Popup>
+                <Popup>{location.id}</Popup>
               </Marker>
               <FlyMapTo />
             </>
@@ -130,7 +141,7 @@ const Location = ({ userDetails }) => {
             (location, indx) =>
               location.id && (
                 <Marker key={indx} position={[location.lat, location.lng]}>
-                  <Popup>{location.userDetails}</Popup>
+                  <Popup>{location.id}</Popup>
                 </Marker>
               )
           )}

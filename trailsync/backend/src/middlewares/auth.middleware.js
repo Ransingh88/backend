@@ -29,7 +29,6 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
 
 // validated roles are authorize to the resources or not
 export const authorizedRoles = (roles) => {
-  console.log(roles, "rolesss");
   return asyncHandler(async (req, res, next) => {
     if (!roles.includes(req.user?.role)) {
       throw new ApiError(
