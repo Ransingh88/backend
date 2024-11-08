@@ -68,7 +68,7 @@ io.on("connection", (socket) => {
     // }
     // io.emit("onlineUsers", Object.keys(onlineUsers));
     io.emit("uupdateLocation", centralizedStore);
-    io.emit("removeLocation", socket.id);
+    // io.emit("removeLocation", socket.id);
   });
 });
 
