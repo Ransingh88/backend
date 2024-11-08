@@ -7,6 +7,7 @@ import axios from "../../config/axiosConfig";
 import { logout } from "../../redux/features/auth/authSlice";
 import { HiOutlineLogout } from "react-icons/hi";
 import { constant } from "../../constants/constants";
+import { socket } from "../../utils/socket";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const Navbar = () => {
     try {
       const res = await axios.post("/user/logout");
       dispatch(logout());
+      socket.disconnect();
       navigate("/");
       toast.success(res.data.message);
     } catch (error) {

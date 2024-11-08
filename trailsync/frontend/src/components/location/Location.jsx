@@ -5,28 +5,13 @@ import "leaflet/dist/leaflet.css";
 import { useDispatch } from "react-redux";
 import { updateStatus } from "../../redux/features/auth/userSlice";
 
-// interface LocationProp {
-//     userDetails:string
-// }
-
-// interface Location {
-//     id:string,
-//     lat:number,
-//     lng:number,
-//     userDetails:string
-//   }
-
 const Location = ({ userDetails }) => {
   const [currentPosition, setCurrentPosition] = useState(null);
-  const [locations, setLocations] = useState([]);
+  // const [locations, setLocations] = useState([]);
   const [watchId, setWatchId] = useState(null);
-  const [recount, setReCount] = useState(0);
-  const [onlineUsers, setOnlineUsers] = useState([]);
+  // const [onlineUsers, setOnlineUsers] = useState([]);
+  const [socketUserData, setSocketUserData] = useState({});
   const dispatch = useDispatch();
-
-  //   console.log("userDetails--", userDetails);
-  //   console.log("locations--", locations);
-  console.warn("+++++componet Rerenders++++++", recount);
 
   const g_options = {
     enableHighAccuracy: true,
@@ -50,23 +35,28 @@ const Location = ({ userDetails }) => {
   }
 
   const handleUpdateLocation = (updateLocationdata) => {
-    setLocations((prevLocation) => {
-      const locationIndex = prevLocation.findIndex(
-        (l) => l.id === updateLocationdata.id
-      );
+    setSocketUserData(updateLocationdata?.clients);
 
-      if (locationIndex >= 0) {
-        const updatedLocations = [...prevLocation];
-        updatedLocations[locationIndex] = updateLocationdata;
-        return updatedLocations;
-      } else {
-        return [...prevLocation, updateLocationdata];
-      }
-    });
+    // setLocations((prevLocation) => {
+    //   const locationIndex = prevLocation.findIndex(
+    //     (l) => l.id === updateLocationdata.id
+    //   );
+
+    //   if (locationIndex >= 0) {
+    //     const updatedLocations = [...prevLocation];
+    //     updatedLocations[locationIndex] = updateLocationdata;
+    //     return updatedLocations;
+    //   } else {
+    //     return [...prevLocation, updateLocationdata];
+    //   }
+    // });
   };
 
   const handleRemoveLocation = (id) => {
-    setLocations((prevLocations) => prevLocations.filter((l) => l.id !== id));
+    // setLocations((prevLocations) => prevLocations.filter((l) => l.id !== id));
+    setSocketUserData((prevLocations) =>
+      Object.keys(prevLocations).filter((l) => prevLocations[l].id !== id)
+    );
   };
 
   function FlyMapTo() {
@@ -77,8 +67,10 @@ const Location = ({ userDetails }) => {
     return null;
   }
 
+  console.log("socketUserData", Object.keys(socketUserData));
+
   useEffect(() => {
-    setReCount((prev) => prev + 1);
+    socket.connect();
     if (navigator.geolocation) {
       const id = navigator.geolocation.watchPosition(
         g_success,
@@ -95,15 +87,17 @@ const Location = ({ userDetails }) => {
       dispatch(updateStatus(onlineUsers));
     });
 
-    socket.on("updateLocation", handleUpdateLocation);
+    socket.on("uupdateLocation", handleUpdateLocation);
+    // socket.on("updateLocation", handleUpdateLocation);
     socket.on("removeLocation", handleRemoveLocation);
 
     return () => {
       if (watchId !== null) {
         navigator.geolocation.clearWatch(watchId);
       }
-      socket.off("updateLocation", handleUpdateLocation);
-      socket.off("removeLocation", handleRemoveLocation);
+      socket.off("uupdateLocation");
+      // socket.off("updateLocation");
+      socket.off("removeLocation");
     };
   }, []);
 
@@ -111,7 +105,7 @@ const Location = ({ userDetails }) => {
     <>
       <div>
         <h4>List Of Users</h4>
-        <ul>
+        {/* <ul>
           {locations.map(
             (location, indx) =>
               location.id && (
@@ -120,9 +114,18 @@ const Location = ({ userDetails }) => {
                 </li>
               )
           )}
+        </ul> */}
+
+        <ul>
+          {Object.keys(socketUserData).map((dItem, i) => (
+            <li key={i}>
+              {socketUserData[dItem]?.userDetails?.fullName} -{" "}
+              {socketUserData[dItem]?.id}
+            </li>
+          ))}
         </ul>
       </div>
-      <div className="mpppp">
+      {/* <div className="mpppp">
         <MapContainer
           center={currentPosition || [51.505, -0.09]}
           zoom={30}
@@ -142,6 +145,40 @@ const Location = ({ userDetails }) => {
               location.id && (
                 <Marker key={indx} position={[location.lat, location.lng]}>
                   <Popup>{location.id}</Popup>
+                </Marker>
+              )
+          )}
+        </MapContainer>
+      </div> */}
+
+      <div className="mpppp">
+        <MapContainer
+          center={currentPosition || [51.505, -0.09]}
+          zoom={30}
+          style={{ height: "100%", width: "100%" }}
+        >
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          {currentPosition && (
+            <>
+              <Marker position={[currentPosition.lat, currentPosition.lng]}>
+                <Popup>{location.id}</Popup>
+              </Marker>
+              <FlyMapTo />
+            </>
+          )}
+          {Object.keys(socketUserData).map(
+            (location, indx) =>
+              socketUserData[location]?.id && (
+                <Marker
+                  key={indx}
+                  position={[
+                    socketUserData[location]?.lat,
+                    socketUserData[location]?.lng,
+                  ]}
+                >
+                  <Popup>
+                    {socketUserData[location]?.userDetails?.fullName}
+                  </Popup>
                 </Marker>
               )
           )}
