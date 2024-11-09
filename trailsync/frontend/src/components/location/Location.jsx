@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
-import L from "leaflet";
+import L, { Icon } from "leaflet";
 import { socket } from "../../utils/socket";
 import "leaflet/dist/leaflet.css";
 import { useDispatch } from "react-redux";
 import { updateStatus } from "../../redux/features/auth/userSlice";
+import mapdotimg from "../../assets/mapdot.svg";
+import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
+import iconUrl from "leaflet/dist/images/marker-icon.png";
+import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 
 const Location = ({ userDetails }) => {
   const [currentPosition, setCurrentPosition] = useState(null);
@@ -13,7 +17,8 @@ const Location = ({ userDetails }) => {
   // const [onlineUsers, setOnlineUsers] = useState([]);
   const [socketUserData, setSocketUserData] = useState({});
   const dispatch = useDispatch();
-  var myIcon = L.divIcon({ className: "my-div-icon" });
+
+  // delete L.Icon.Default.prototype._getIconUrl;
 
   const g_options = {
     enableHighAccuracy: true,
@@ -87,6 +92,14 @@ const Location = ({ userDetails }) => {
     socket.on("onlineUsers", (onlineUsers) => {
       console.log("onlineUsers: ", onlineUsers);
       dispatch(updateStatus(onlineUsers));
+    });
+
+    delete L.Icon.Default.prototype._getIconUrl;
+
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl,
+      iconUrl,
+      shadowUrl,
     });
 
     socket.on("updateLocation", handleUpdateLocation);
@@ -164,7 +177,13 @@ const Location = ({ userDetails }) => {
             <>
               <Marker
                 position={[currentPosition.lat, currentPosition.lng]}
-                icon={myIcon}
+                // icon={
+                //   new Icon({
+                //     iconUrl: mapdotimg,
+                //     iconSize: [25, 41],
+                //     iconAnchor: [12, 41],
+                //   })
+                // }
               >
                 <Popup>{location.id}</Popup>
               </Marker>
@@ -176,6 +195,14 @@ const Location = ({ userDetails }) => {
               socketUserData[location]?.id && (
                 <Marker
                   key={indx}
+                  // icon={
+                  //   new Icon({
+                  //     iconUrl: mapdotimg,
+                  //     iconSize: [25, 41],
+                  //     iconAnchor: [12, 41],
+                  //     popupAnchor: [1, -30],
+                  //   })
+                  // }
                   position={[
                     socketUserData[location]?.lat,
                     socketUserData[location]?.lng,
