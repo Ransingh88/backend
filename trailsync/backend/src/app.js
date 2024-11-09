@@ -6,7 +6,6 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
-import { ApiError } from "./utils/ApiError.js";
 
 dotenv.config({ path: "./.env" });
 
@@ -29,13 +28,10 @@ io.use((socket, next) => {
   if (token) {
     const decodedJWT = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     socket.userId = decodedJWT._id;
-    // socket.fullname = decodedJWT.fullName;
-    // console.log("socket", socket.userId, socket.id);
     next();
   }
 });
 
-let onlineUsers = {};
 let centralizedStore = {
   clients: {},
 };
@@ -44,30 +40,15 @@ io.on("connection", (socket) => {
   console.log("client connected: ", socket.id);
   socket.emit("initialData", centralizedStore);
 
-  // socket.on("userConnected", (userId) => {
-  // console.log("userConnected", userId);
-  //   onlineUsers[userId] = socket.id;
-  //   io.emit("onlineUsers", Object.keys(onlineUsers));
-  // });
-
   socket.on("sendLocation", (locationData) => {
     centralizedStore.clients[socket.id] = locationData;
-    // io.emit("updateLocation", locationData);
-    io.emit("uupdateLocation", centralizedStore);
+    io.emit("updateLocation", centralizedStore);
   });
 
   socket.on("disconnect", () => {
     console.log("client disconnected X-:", socket.id);
     delete centralizedStore.clients[socket.id];
-
-    // for (let userId in onlineUsers) {
-    //   if (onlineUsers[userId] === socket.id) {
-    //     delete onlineUsers[userId];
-    //     break;
-    //   }
-    // }
-    // io.emit("onlineUsers", Object.keys(onlineUsers));
-    io.emit("uupdateLocation", centralizedStore);
+    io.emit("updateLocation", centralizedStore);
     // io.emit("removeLocation", socket.id);
   });
 });

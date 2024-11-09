@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import L from "leaflet";
 import { socket } from "../../utils/socket";
 import "leaflet/dist/leaflet.css";
 import { useDispatch } from "react-redux";
@@ -12,6 +13,7 @@ const Location = ({ userDetails }) => {
   // const [onlineUsers, setOnlineUsers] = useState([]);
   const [socketUserData, setSocketUserData] = useState({});
   const dispatch = useDispatch();
+  var myIcon = L.divIcon({ className: "my-div-icon" });
 
   const g_options = {
     enableHighAccuracy: true,
@@ -87,17 +89,17 @@ const Location = ({ userDetails }) => {
       dispatch(updateStatus(onlineUsers));
     });
 
-    socket.on("uupdateLocation", handleUpdateLocation);
+    socket.on("updateLocation", handleUpdateLocation);
     // socket.on("updateLocation", handleUpdateLocation);
-    socket.on("removeLocation", handleRemoveLocation);
+    // socket.on("removeLocation", handleRemoveLocation);
 
     return () => {
       if (watchId !== null) {
         navigator.geolocation.clearWatch(watchId);
       }
-      socket.off("uupdateLocation");
+      socket.off("updateLocation");
       // socket.off("updateLocation");
-      socket.off("removeLocation");
+      // socket.off("removeLocation");
     };
   }, []);
 
@@ -160,7 +162,10 @@ const Location = ({ userDetails }) => {
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {currentPosition && (
             <>
-              <Marker position={[currentPosition.lat, currentPosition.lng]}>
+              <Marker
+                position={[currentPosition.lat, currentPosition.lng]}
+                icon={myIcon}
+              >
                 <Popup>{location.id}</Popup>
               </Marker>
               <FlyMapTo />
