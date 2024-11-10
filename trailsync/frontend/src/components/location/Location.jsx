@@ -1,24 +1,19 @@
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
-import L, { Icon } from "leaflet";
-import { socket } from "../../utils/socket";
+import { useSelector } from "react-redux";
 import "leaflet/dist/leaflet.css";
-import { useDispatch } from "react-redux";
-import { updateStatus } from "../../redux/features/auth/userSlice";
-import mapdotimg from "../../assets/mapdot.svg";
+import L from "leaflet";
 import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import iconUrl from "leaflet/dist/images/marker-icon.png";
 import shadowUrl from "leaflet/dist/images/marker-shadow.png";
+import { socket } from "../../utils/socket";
+import RoutingMachine from "./RoutingMachine";
 
-const Location = ({ userDetails }) => {
+const Location = () => {
   const [currentPosition, setCurrentPosition] = useState(null);
-  // const [locations, setLocations] = useState([]);
   const [watchId, setWatchId] = useState(null);
-  // const [onlineUsers, setOnlineUsers] = useState([]);
-  const [socketUserData, setSocketUserData] = useState({});
-  const dispatch = useDispatch();
-
-  // delete L.Icon.Default.prototype._getIconUrl;
+  const { socketActiveUsers } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.auth);
 
   const g_options = {
     enableHighAccuracy: true,
@@ -30,7 +25,7 @@ const Location = ({ userDetails }) => {
     const { latitude, longitude } = position.coords;
     setCurrentPosition({ lat: latitude, lng: longitude });
     socket.emit("sendLocation", {
-      userDetails,
+      userDetails: user,
       id: socket.id,
       lat: latitude,
       lng: longitude,
@@ -41,31 +36,6 @@ const Location = ({ userDetails }) => {
     console.error("Geolocation error : ", error);
   }
 
-  const handleUpdateLocation = (updateLocationdata) => {
-    setSocketUserData(updateLocationdata?.clients);
-
-    // setLocations((prevLocation) => {
-    //   const locationIndex = prevLocation.findIndex(
-    //     (l) => l.id === updateLocationdata.id
-    //   );
-
-    //   if (locationIndex >= 0) {
-    //     const updatedLocations = [...prevLocation];
-    //     updatedLocations[locationIndex] = updateLocationdata;
-    //     return updatedLocations;
-    //   } else {
-    //     return [...prevLocation, updateLocationdata];
-    //   }
-    // });
-  };
-
-  const handleRemoveLocation = (id) => {
-    // setLocations((prevLocations) => prevLocations.filter((l) => l.id !== id));
-    setSocketUserData((prevLocations) =>
-      Object.keys(prevLocations).filter((l) => prevLocations[l].id !== id)
-    );
-  };
-
   function FlyMapTo() {
     const map = useMap();
     useEffect(() => {
@@ -74,7 +44,17 @@ const Location = ({ userDetails }) => {
     return null;
   }
 
-  console.log("socketUserData", Object.keys(socketUserData));
+  const MapWithRoutingComponent = () => {
+    const map = useMap();
+
+    return (
+      <RoutingMachine
+        map={map}
+        start={[12.9734024, 77.6380339]}
+        destination={[13.199379, 77.710136]}
+      />
+    );
+  };
 
   useEffect(() => {
     socket.connect();
@@ -87,13 +67,6 @@ const Location = ({ userDetails }) => {
       setWatchId(id);
     }
 
-    socket.emit("userConnected", userDetails?._id);
-
-    socket.on("onlineUsers", (onlineUsers) => {
-      console.log("onlineUsers: ", onlineUsers);
-      dispatch(updateStatus(onlineUsers));
-    });
-
     delete L.Icon.Default.prototype._getIconUrl;
 
     L.Icon.Default.mergeOptions({
@@ -102,7 +75,6 @@ const Location = ({ userDetails }) => {
       shadowUrl,
     });
 
-    socket.on("updateLocation", handleUpdateLocation);
     // socket.on("updateLocation", handleUpdateLocation);
     // socket.on("removeLocation", handleRemoveLocation);
 
@@ -110,7 +82,6 @@ const Location = ({ userDetails }) => {
       if (watchId !== null) {
         navigator.geolocation.clearWatch(watchId);
       }
-      socket.off("updateLocation");
       // socket.off("updateLocation");
       // socket.off("removeLocation");
     };
@@ -120,52 +91,15 @@ const Location = ({ userDetails }) => {
     <>
       <div>
         <h4>List Of Users</h4>
-        {/* <ul>
-          {locations.map(
-            (location, indx) =>
-              location.id && (
-                <li key={indx}>
-                  {location.userDetails.fullName} - {location.id}
-                </li>
-              )
-          )}
-        </ul> */}
-
         <ul>
-          {Object.keys(socketUserData).map((dItem, i) => (
+          {Object.keys(socketActiveUsers).map((dItem, i) => (
             <li key={i}>
-              {socketUserData[dItem]?.userDetails?.fullName} -{" "}
-              {socketUserData[dItem]?.id}
+              {socketActiveUsers[dItem]?.userDetails?.fullName} -{" "}
+              {socketActiveUsers[dItem]?.id}
             </li>
           ))}
         </ul>
       </div>
-      {/* <div className="mpppp">
-        <MapContainer
-          center={currentPosition || [51.505, -0.09]}
-          zoom={30}
-          style={{ height: "100%", width: "100%" }}
-        >
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          {currentPosition && (
-            <>
-              <Marker position={[currentPosition.lat, currentPosition.lng]}>
-                <Popup>{location.id}</Popup>
-              </Marker>
-              <FlyMapTo />
-            </>
-          )}
-          {locations.map(
-            (location, indx) =>
-              location.id && (
-                <Marker key={indx} position={[location.lat, location.lng]}>
-                  <Popup>{location.id}</Popup>
-                </Marker>
-              )
-          )}
-        </MapContainer>
-      </div> */}
-
       <div className="mpppp">
         <MapContainer
           center={currentPosition || [51.505, -0.09]}
@@ -173,6 +107,7 @@ const Location = ({ userDetails }) => {
           style={{ height: "100%", width: "100%" }}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <MapWithRoutingComponent />
           {currentPosition && (
             <>
               <Marker
@@ -190,9 +125,9 @@ const Location = ({ userDetails }) => {
               <FlyMapTo />
             </>
           )}
-          {Object.keys(socketUserData).map(
+          {Object.keys(socketActiveUsers).map(
             (location, indx) =>
-              socketUserData[location]?.id && (
+              socketActiveUsers[location]?.id && (
                 <Marker
                   key={indx}
                   // icon={
@@ -204,12 +139,12 @@ const Location = ({ userDetails }) => {
                   //   })
                   // }
                   position={[
-                    socketUserData[location]?.lat,
-                    socketUserData[location]?.lng,
+                    socketActiveUsers[location]?.lat,
+                    socketActiveUsers[location]?.lng,
                   ]}
                 >
                   <Popup>
-                    {socketUserData[location]?.userDetails?.fullName}
+                    {socketActiveUsers[location]?.userDetails?.fullName}
                   </Popup>
                 </Marker>
               )

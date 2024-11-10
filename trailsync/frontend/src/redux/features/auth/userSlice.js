@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   users: [],
+  socketActiveUsers: {},
   status: "idle",
 };
 
@@ -12,16 +13,12 @@ const userSlice = createSlice({
     addUser: (state, action) => {
       state.users = action.payload;
     },
-    updateStatus: (state, action) => {
-      state.users = state.users.map((user) => {
-        if (action.payload.includes(user._id)) {
-          return { ...user, status: true };
-        } else return { ...user, status: false };
-      });
+    addSocketUser: (state, action) => {
+      state.socketActiveUsers = action.payload;
     },
   },
 });
 
-export const { addUser, updateStatus } = userSlice.actions;
+export const { addUser, updateStatus, addSocketUser } = userSlice.actions;
 
 export default userSlice.reducer;

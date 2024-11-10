@@ -8,7 +8,7 @@ import { addUser } from "../../redux/features/auth/userSlice";
 const Members = () => {
   // const [userData, setUserData] = useState([]);
   const dispatch = useDispatch();
-  const { users } = useSelector((state) => state.user);
+  const { users, socketActiveUsers } = useSelector((state) => state.user);
   useEffect(() => {
     const getAllUserDetails = async () => {
       const res = await axios.get("/user/allUser");
@@ -36,39 +36,45 @@ const Members = () => {
             </tr>
           </thead>
           <tbody>
-            {users?.map((user, indx) => (
-              <tr key={indx}>
-                <td>
-                  <div className="members__table--userDetail">
-                    <img
-                      src="https://via.placeholder.com/40"
-                      alt="user profile"
-                    />{" "}
-                    <div>
-                      <h5>{user.fullName}</h5>
-                      <p>{user.email}</p>
+            {users?.map((user, indx) => {
+              const isActive = Object.keys(socketActiveUsers).some(
+                (activeUser) =>
+                  socketActiveUsers[activeUser]?.userDetails?._id === user._id
+              );
+              return (
+                <tr key={indx}>
+                  <td>
+                    <div className="members__table--userDetail">
+                      <img
+                        src="https://via.placeholder.com/40"
+                        alt="user profile"
+                      />{" "}
+                      <div>
+                        <h5>{user.fullName}</h5>
+                        <p>{user.email}</p>
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td>{user.username}</td>
-                <td>{user.role}</td>
-                <td>
-                  <span className={user?.status ? "online" : "offline"}>
-                    {user?.status ? "Online" : "Offline"}
-                  </span>
-                </td>
-                <td>{user.updatedAt}</td>
-                <td>
-                  <button>
-                    <HiOutlinePencilAlt />
-                  </button>
-                  {"   "}
-                  <button>
-                    <HiOutlineDotsVertical />
-                  </button>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td>{user.username}</td>
+                  <td>{user.role}</td>
+                  <td>
+                    <span className={isActive ? "online" : "offline"}>
+                      {isActive ? "Online" : "Offline"}
+                    </span>
+                  </td>
+                  <td>{user.updatedAt}</td>
+                  <td>
+                    <button>
+                      <HiOutlinePencilAlt />
+                    </button>
+                    {"   "}
+                    <button>
+                      <HiOutlineDotsVertical />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
