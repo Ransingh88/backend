@@ -7,7 +7,6 @@ import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import iconUrl from "leaflet/dist/images/marker-icon.png";
 import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 import { socket } from "../../utils/socket";
-import RoutingMachine from "./RoutingMachine";
 
 const Location = () => {
   const [currentPosition, setCurrentPosition] = useState(null);
@@ -43,18 +42,6 @@ const Location = () => {
     }, [currentPosition]);
     return null;
   }
-
-  const MapWithRoutingComponent = () => {
-    const map = useMap();
-
-    return (
-      <RoutingMachine
-        map={map}
-        start={[12.9734024, 77.6380339]}
-        destination={[13.199379, 77.710136]}
-      />
-    );
-  };
 
   useEffect(() => {
     socket.connect();
@@ -107,7 +94,6 @@ const Location = () => {
           style={{ height: "100%", width: "100%" }}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          <MapWithRoutingComponent />
           {currentPosition && (
             <>
               <Marker
