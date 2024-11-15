@@ -2,17 +2,24 @@ import { useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import { useSelector } from "react-redux";
 import "leaflet/dist/leaflet.css";
+import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
+import "leaflet-geosearch/dist/geosearch.css";
 import L from "leaflet";
 import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import iconUrl from "leaflet/dist/images/marker-icon.png";
 import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 import { socket } from "../../utils/socket";
+import RoutingMap from "./RoutingMap";
+import GeoSearch from "./GeoSearch";
 
 const Location = () => {
   const [currentPosition, setCurrentPosition] = useState(null);
   const [watchId, setWatchId] = useState(null);
   const { socketActiveUsers } = useSelector((state) => state.user);
   const { user } = useSelector((state) => state.auth);
+  const [destination, setDestination] = useState(null);
+  const [navigationStarted, setNavigationStrted] = useState(false);
+  const [routeInstruction, setRouteInstruction] = useState([]);
 
   const g_options = {
     enableHighAccuracy: true,
@@ -42,6 +49,13 @@ const Location = () => {
     }, [currentPosition]);
     return null;
   }
+
+  const handlNavigationStart = () => {
+    setNavigationStrted(true);
+  };
+  const handlNavigationStop = () => {
+    setNavigationStrted(false);
+  };
 
   useEffect(() => {
     socket.connect();
@@ -87,13 +101,32 @@ const Location = () => {
           ))}
         </ul>
       </div>
+      <div>
+        {navigationStarted ? (
+          <button onClick={handlNavigationStop} className="btn btn-danger">
+            stop navigation
+          </button>
+        ) : (
+          <button onClick={handlNavigationStart} className="btn btn-primary">
+            start navigation
+          </button>
+        )}
+      </div>
       <div className="mpppp">
         <MapContainer
           center={currentPosition || [51.505, -0.09]}
-          zoom={30}
+          zoom={20}
           style={{ height: "100%", width: "100%" }}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          {destination && navigationStarted && (
+            <RoutingMap
+              start={currentPosition}
+              destination={destination}
+              setRouteInstruction={setRouteInstruction}
+            />
+          )}
+          <GeoSearch setDestination={setDestination} />
           {currentPosition && (
             <>
               <Marker
