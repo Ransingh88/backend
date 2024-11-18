@@ -69,6 +69,10 @@ const Navbar = () => {
             Logout <HiOutlineLogout />
           </button>
         )}
+
+        {/* <div className="marker">
+          <div className="inner-circle"></div>
+        </div> */}
       </div>
     </div>
   );

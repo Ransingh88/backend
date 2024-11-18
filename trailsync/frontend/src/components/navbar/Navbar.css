@@ -30,3 +30,52 @@
     }
   }
 }
+
+.marker {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  background-color: rgb(98, 90, 242);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: heartbeat 2s infinite;
+}
+
+.marker::before {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-color: rgba(0, 120, 255, 0.3);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+.inner-circle {
+  width: 8px;
+  height: 8px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}

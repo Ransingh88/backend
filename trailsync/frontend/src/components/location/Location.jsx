@@ -11,6 +11,7 @@ import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 import { socket } from "../../utils/socket";
 import RoutingMap from "./RoutingMap";
 import GeoSearch from "./GeoSearch";
+import Map from "../map/Map";
 
 const Location = () => {
   const [currentPosition, setCurrentPosition] = useState(null);
@@ -112,7 +113,7 @@ const Location = () => {
           </button>
         )}
       </div>
-      <div className="mpppp">
+      {/* <div className="mpppp">
         <MapContainer
           center={currentPosition || [51.505, -0.09]}
           zoom={20}
@@ -169,6 +170,9 @@ const Location = () => {
               )
           )}
         </MapContainer>
+      </div> */}
+      <div className="mpppp">
+        <Map currentPosition={currentPosition} />
       </div>
     </>
   );
