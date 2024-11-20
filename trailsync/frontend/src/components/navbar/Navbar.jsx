@@ -70,8 +70,14 @@ const Navbar = () => {
           </button>
         )}
 
-        {/* <div className="marker">
-          <div className="inner-circle"></div>
+        {/* <div className="socket__user-marker">
+          <div className="socket__user-markerIcon">
+            <img
+              src={`https://placehold.co/100x100/royalblue/white?text=D`}
+              alt=""
+              className="socket__user-markerImage"
+            />
+          </div>
         </div> */}
       </div>
     </div>

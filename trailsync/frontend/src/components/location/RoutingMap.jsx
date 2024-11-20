@@ -25,14 +25,14 @@ const Routing = ({ start, destination, setRouteInstruction }) => {
       routeWhileDragging: true,
       autoRoute: true,
       // show: false,
-      showAlternatives: true,
+      // showAlternatives: true,
       //   geocoder: L.Control.Geocoder.nominatim(),
       lineOptions: {
         styles: [{ color: "blue", opacity: 0.7, weight: 4 }],
       },
-      createMarker: (i, waypoint) => {
-        L.marker(waypoint.latLng, { draggable: i === 0 });
-      },
+      // createMarker: (i, waypoint) => {
+      //   L.marker(waypoint.latLng, { draggable: i === 0 });
+      // },
       useZoomParameter: true,
     })
       .on("routesfound", (event) => {

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import "leaflet-geosearch/dist/geosearch.css";
-import L from "leaflet";
+import L, { divIcon, Icon } from "leaflet";
 import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import iconUrl from "leaflet/dist/images/marker-icon.png";
 import shadowUrl from "leaflet/dist/images/marker-shadow.png";
@@ -22,10 +22,20 @@ const Location = () => {
   const [navigationStarted, setNavigationStrted] = useState(false);
   const [routeInstruction, setRouteInstruction] = useState([]);
 
+  const userLiveIcon = divIcon({
+    className: "custom-div-icon",
+    html: "<div class='marker'><div class='inner-circle'></div></div>",
+  });
+  const socketUserLiveIcon = divIcon({
+    className: "custom-div-icon",
+    html: "<div class='socket__user-marker'><div class='socket__user-markerIcon'><img src={`https://placehold.co/100x100/royalblue/white?text=D`} alt='' class='socket__user-markerImage'/></div></div>",
+    // iconAnchor: [20, 40],
+  });
+
   const g_options = {
     enableHighAccuracy: true,
-    maximumAge: 0,
-    timeout: 5000,
+    // maximumAge: 0,
+    // timeout: 5000,
   };
 
   function g_success(position) {
@@ -113,10 +123,10 @@ const Location = () => {
           </button>
         )}
       </div>
-      {/* <div className="mpppp">
+      <div className="mpppp">
         <MapContainer
           center={currentPosition || [51.505, -0.09]}
-          zoom={20}
+          zoom={16}
           style={{ height: "100%", width: "100%" }}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -132,47 +142,44 @@ const Location = () => {
             <>
               <Marker
                 position={[currentPosition.lat, currentPosition.lng]}
-                // icon={
-                //   new Icon({
-                //     iconUrl: mapdotimg,
-                //     iconSize: [25, 41],
-                //     iconAnchor: [12, 41],
-                //   })
-                // }
+                icon={userLiveIcon}
               >
-                <Popup>{location.id}</Popup>
+                <Popup>{user?.fullName}</Popup>
               </Marker>
               <FlyMapTo />
             </>
           )}
-          {Object.keys(socketActiveUsers).map(
-            (location, indx) =>
-              socketActiveUsers[location]?.id && (
-                <Marker
-                  key={indx}
-                  // icon={
-                  //   new Icon({
-                  //     iconUrl: mapdotimg,
-                  //     iconSize: [25, 41],
-                  //     iconAnchor: [12, 41],
-                  //     popupAnchor: [1, -30],
-                  //   })
-                  // }
-                  position={[
-                    socketActiveUsers[location]?.lat,
-                    socketActiveUsers[location]?.lng,
-                  ]}
-                >
-                  <Popup>
-                    {socketActiveUsers[location]?.userDetails?.fullName}
-                  </Popup>
-                </Marker>
-              )
-          )}
+          {Object.keys(socketActiveUsers)
+            .filter(
+              (socketUser) =>
+                socketActiveUsers[socketUser]?.userDetails?._id !== user._id
+            )
+            .map(
+              (location, indx) =>
+                socketActiveUsers[location]?.id && (
+                  <Marker
+                    key={indx}
+                    icon={socketUserLiveIcon}
+                    // icon={
+                    //   new Icon({
+                    //     iconUrl: mapdotimg,
+                    //     iconSize: [25, 41],
+                    //     iconAnchor: [12, 41],
+                    //     popupAnchor: [1, -30],
+                    //   })
+                    // }
+                    position={[
+                      socketActiveUsers[location]?.lat,
+                      socketActiveUsers[location]?.lng,
+                    ]}
+                  >
+                    <Popup>
+                      {socketActiveUsers[location]?.userDetails?.fullName}
+                    </Popup>
+                  </Marker>
+                )
+            )}
         </MapContainer>
-      </div> */}
-      <div className="mpppp">
-        <Map currentPosition={currentPosition} />
       </div>
     </>
   );
