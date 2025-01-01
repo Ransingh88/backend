@@ -24,7 +24,7 @@ const Routing = ({ start, destination, setRouteInstruction }) => {
       ],
       routeWhileDragging: true,
       autoRoute: true,
-      // show: false,
+      show: false,
       // showAlternatives: true,
       //   geocoder: L.Control.Geocoder.nominatim(),
       lineOptions: {

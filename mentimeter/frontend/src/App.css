@@ -1,0 +1,39 @@
+#root {
+  /* max-width: 1280px; */
+  /* margin: 0 auto; */
+  /* padding: 2rem; */
+  /* text-align: center; */
+  font-family: "Poppins";
+  /* background: red; */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background: white;
+  color: #111827;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 3px;
+  /* border-radius: 50%; */
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  /* border-radius: 50%; */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}

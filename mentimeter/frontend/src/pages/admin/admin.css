@@ -1,0 +1,287 @@
+.admin {
+  @apply h-screen w-full bg-white relative box-border;
+
+  & > .admin__auth {
+    @apply p-4 flex justify-end items-center;
+
+    & > button {
+      @apply bg-gray-700 px-3 py-1 rounded-2xl text-white;
+    }
+  }
+
+  & > .session__code {
+    @apply p-2 py-4 flex justify-center items-center font-medium;
+  }
+
+  & > .admin__actionBtn {
+    @apply flex justify-start items-center;
+
+    button {
+      @apply m-2 px-3 py-1 bg-slate-400 rounded text-slate-100;
+    }
+  }
+
+  & > .admin__quizzes {
+    @apply flex;
+
+    & > .admin_quiz {
+      @apply p-2 flex justify-start items-start flex-wrap gap-3;
+
+      & .admin__quizItem {
+        @apply bg-indigo-200 p-2 h-32 w-52 rounded flex flex-col justify-between;
+
+        & .start__session {
+          @apply bg-slate-500 p-1 rounded;
+        }
+      }
+    }
+  }
+
+  & .admin_quizForm-dialog {
+    @apply h-5/6 w-5/6 bg-gray-100 p-4 shadow-xl border rounded-lg absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+  }
+}
+
+.quizpannel_main {
+  @apply w-full h-screen flex flex-col;
+}
+.quizpannel__heading {
+  @apply p-2 border-b flex justify-between items-center;
+
+  & .actionIcon {
+    @apply p-1 border rounded-md text-gray-400;
+  }
+
+  & > .heading__left-pannel {
+    @apply flex gap-2 items-center;
+  }
+  & > .heading__middle-pannel {
+    & .session__code {
+      @apply font-normal text-gray-500;
+      & span {
+        @apply px-4 tracking-wider shadow py-1 border rounded-md text-[#111827];
+      }
+    }
+  }
+  & > .heading__right-pannel {
+    @apply flex items-center gap-2;
+
+    & .sessionButton-start {
+      @apply px-3 py-1 rounded-md bg-green-500 text-white;
+    }
+    & .sessionButton-end {
+      @apply px-3 py-1 rounded-md bg-red-500 text-white;
+    }
+  }
+}
+.quizpannel__body {
+  @apply h-full flex justify-between;
+
+  & .quizpannel__left-pannel {
+    @apply w-1/4 border-r flex flex-col gap-2;
+  }
+
+  & .quizpannel_main-container {
+    @apply w-3/4 border-r;
+
+    & .quizpannel__container-tabs {
+      @apply flex gap-2;
+    }
+  }
+  & .quizpannel_right-pannel,
+  .quizpannel__left-pannel {
+    @apply w-1/4 p-2 overflow-y-scroll;
+    & .quizpannel__question-section {
+      @apply flex flex-col gap-2;
+    }
+    & .questionItem {
+      @apply bg-gray-100 border text-sm flex flex-col justify-between p-2 gap-2 rounded-lg;
+
+      & .publishBtn--active {
+        @apply bg-blue-500 text-white p-1 rounded;
+      }
+      & .publishBtn--disabled {
+        @apply bg-blue-500 text-white p-1 rounded opacity-50;
+      }
+    }
+  }
+}
+
+/* Question Craft Pannel */
+
+.question_pannel {
+  @apply w-full h-screen flex flex-col;
+
+  & > .question_pannel-heading {
+    @apply w-full py-2 px-4 flex justify-between items-center border-b shadow-sm;
+
+    & > .title {
+      @apply w-1/3 flex gap-4 items-center;
+
+      & > .backIcon {
+        @apply p-1 rounded-md border;
+      }
+
+      & > span {
+        @apply flex justify-normal items-center gap-2;
+
+        & > input {
+          @apply w-2/3 py-1 px-2 bg-gray-100 rounded;
+        }
+        & > button {
+          @apply p-1 bg-white shadow border rounded-md;
+          & > svg {
+            @apply text-gray-400;
+          }
+        }
+      }
+    }
+    & > .action-buttons {
+      @apply flex items-center gap-2;
+      & > button {
+        @apply bg-gray-950 text-sm text-white px-4 py-2 rounded-lg;
+      }
+    }
+  }
+
+  & > .question_pannel-body {
+    @apply w-full h-full flex justify-normal;
+
+    & > .qpb__left {
+      @apply w-1/5 bg-[#f9fafb] border-r p-3 overflow-y-scroll;
+
+      & > .left__head-title {
+        @apply flex justify-between items-center my-2;
+
+        & > p {
+          @apply uppercase text-xs font-medium;
+        }
+        & > button {
+          @apply uppercase bg-white p-1 rounded-md border shadow text-xs font-medium;
+        }
+      }
+
+      & > .left__question-container {
+        @apply my-4 flex flex-col gap-4  box-content;
+
+        & > .left__question-box {
+          @apply border p-2 rounded-md shadow-sm flex flex-col gap-3;
+
+          & > span {
+            @apply flex items-center gap-2;
+            & > p {
+              @apply bg-gray-100 min-w-5 min-h-5 rounded text-xs flex justify-center items-center;
+            }
+            & > h4 {
+              @apply text-ellipsis overflow-hidden whitespace-nowrap;
+            }
+          }
+          & > div {
+            @apply flex justify-between items-center;
+            & > p {
+              @apply w-fit text-xs bg-gray-100 rounded px-2 py-1 font-medium;
+            }
+            & > button {
+              @apply text-red-500;
+            }
+          }
+        }
+      }
+    }
+    & > .qpb__right {
+      @apply w-4/5 p-4 overflow-y-scroll;
+
+      & > .que__desc {
+        @apply flex flex-col gap-2;
+        & label {
+          @apply text-[#adadad] uppercase text-xs tracking-wider;
+        }
+        & textarea {
+          @apply bg-[#f9fafb] w-fit p-2 border rounded-md;
+        }
+      }
+
+      & > .que__bulk {
+        @apply my-2 py-2 flex flex-col gap-4;
+        & > span {
+          @apply flex items-center gap-2;
+        }
+        & > div {
+          @apply flex items-end gap-2;
+        }
+        & label {
+          @apply text-[#adadad] uppercase text-xs tracking-wider;
+        }
+        & textarea {
+          @apply bg-[#f9fafb] w-fit p-2 border rounded-md;
+        }
+        & > .que__bulk-inputsContainer {
+          button {
+            @apply bg-gray-950 px-4 py-2 text-white text-sm rounded-md flex flex-row gap-2 items-end;
+          }
+        }
+      }
+    }
+  }
+
+  /* questionItem__box-container */
+  & .questionItem__box-container {
+    @apply flex flex-col gap-4;
+    & .questionItem__box {
+      @apply w-full h-fit border rounded-md p-4 shadow;
+
+      & .questionItem__box--top {
+        @apply flex justify-between items-center pb-4;
+
+        & select {
+          @apply bg-gray-100 px-4 py-0.5 rounded font-medium text-sm;
+        }
+        & button {
+          @apply bg-white p-1 rounded-md shadow border text-sm;
+        }
+      }
+      & .questionItem__box--middle {
+        @apply py-4 flex flex-col gap-2;
+        & .qb__questions {
+          @apply flex flex-col gap-2;
+          & > div {
+            @apply flex items-center gap-2;
+            & > span {
+              @apply bg-gray-950 text-white text-xs p-[1px] rounded;
+            }
+            & label {
+              @apply capitalize font-medium text-sm;
+              & span {
+                @apply text-red-500;
+              }
+            }
+          }
+          & > input {
+            @apply bg-gray-100 rounded-md w-full resize-none p-2 border text-start;
+          }
+        }
+        & .qb__options {
+          & > p {
+            @apply text-sm capitalize font-medium;
+          }
+          & > .qb_options-container {
+            @apply py-2 flex flex-col gap-2;
+
+            & > .qb__optionItem {
+              @apply flex items-center gap-2;
+              & > .optionFieldRadio {
+                @apply rounded-full bg-gray-100;
+              }
+              & > .optionField {
+                @apply w-full py-1 px-2 rounded-md bg-gray-100;
+              }
+            }
+          }
+          & > .option__addAnswers {
+            @apply border border-dashed border-gray-300 px-2 p-1 rounded-md capitalize text-sm m-2 ml-5 font-medium;
+          }
+        }
+      }
+    }
+  }
+}

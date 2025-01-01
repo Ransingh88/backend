@@ -1,0 +1,59 @@
+.home__main {
+  @apply w-full h-screen flex flex-col justify-center items-center bg-white text-center;
+
+  & > .heading_title {
+    @apply m-4;
+  }
+
+  & > .home_subheading {
+    @apply flex flex-col gap-1 my-4 justify-start items-center;
+    & > .subheading-1 {
+      @apply text-2xl;
+    }
+    & .subheading-2 {
+      @apply text-sm text-slate-500;
+    }
+  }
+
+  & > .join__input {
+    @apply w-1/4 flex flex-col justify-center items-center gap-6 m-2;
+
+    & .subheading-2 {
+      @apply text-sm text-slate-500;
+    }
+
+    & > input {
+      @apply w-full p-3 rounded-xl bg-slate-100;
+    }
+    & > button {
+      @apply bg-slate-900 text-slate-100 rounded-full px-5 py-3 hover:bg-slate-950 transition-all;
+    }
+  }
+
+  & > .join__termNcond {
+    @apply text-xs text-slate-800 mt-12 mb-4;
+  }
+}
+
+.quiz_playground {
+  @apply p-2 w-full h-screen flex flex-col justify-start items-center bg-white;
+
+  & > .quiz_playground_title {
+    @apply m-4;
+  }
+
+  & > .quiz_playground-box {
+    @apply w-2/3 h-screen p-4 flex flex-col justify-start items-start;
+
+    & .quiz_playground-subheading {
+      @apply text-sm text-slate-400 my-2;
+    }
+    & .qp_questions {
+      @apply normal-case my-2;
+    }
+
+    & .qp_options-box {
+      @apply w-1/2 p-4 flex flex-col justify-start items-center gap-2;
+    }
+  }
+}
