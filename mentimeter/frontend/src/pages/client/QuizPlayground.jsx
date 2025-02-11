@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { socket } from "../../utils/socket";
 import { useSelector } from "react-redux";
-import axios from "axios";
+import getTimeDifference from "../../utils/getTimeDifference";
+import { useParams } from "react-router";
+// import axios from "axios";
 
 const QuizPlayground = () => {
   const [currentQuestion, setCurrentQuestion] = useState("");
@@ -9,26 +11,58 @@ const QuizPlayground = () => {
   const [options, setOptions] = useState([]);
   const [quizStarted, setQuizStarted] = useState(false);
   const [optionSelected, setOptionSelected] = useState(null);
-  const { userName, sessionCode } = useSelector((state) => state.quiz);
+  const { userName, sessionCode, userId } = useSelector((state) => state.quiz);
   const [timer, setTimer] = useState(15);
+  const [answerFeedback, setAnswerFeedback] = useState();
+  const [responseTime, setResponseTime] = useState({
+    starttime: null,
+    endtime: null,
+  });
 
   const handleOptionSelecteChange = async (e) => {
+    const currentEndTime = new Date();
+    setResponseTime({ ...responseTime, endtime: currentEndTime });
+    const ansResponseTime = getTimeDifference(
+      responseTime.starttime,
+      currentEndTime
+    );
     setTimer(0);
     setOptionSelected(e.target.value);
-    const responseData = await axios.post(
-      "http://localhost:3000/api/response/submit",
-      {
-        sessionCode: sessionCode,
-        name: userName,
-        answer: {
-          questionId: questionId,
-          selectedOption: e.target.value,
-        },
-      }
-    );
 
-    console.log("responseData", responseData);
+    socket.emit("submit-answer", {
+      sessionCode: sessionCode,
+      userId: userId,
+      name: userName,
+      answer: {
+        questionId: questionId,
+        selectedOption: e.target.value,
+        ansResponseTime,
+        ansSubmitTime: currentEndTime,
+        points: 20,
+      },
+    });
+
+    // await axios.post("http://localhost:3000/api/response/submit", {
+    //   sessionCode: sessionCode,
+    //   userId: userId,
+    //   name: userName,
+    //   answer: {
+    //     questionId: questionId,
+    //     selectedOption: e.target.value,
+    //     ansResponseTime,
+    //     ansSubmitTime: currentEndTime,
+    //   },
+    // });
   };
+  const { sessioncode: userSession } = useParams();
+
+  useEffect(() => {
+    socket.emit("joinSession", {
+      sessionCode: userSession,
+      userId: socket.id,
+      userName: "debadebadeba",
+    });
+  }, [userSession]);
 
   useEffect(() => {
     // if (timer == 0) {
@@ -45,11 +79,16 @@ const QuizPlayground = () => {
 
   useEffect(() => {
     socket.on("receive-question", (data) => {
+      setResponseTime({ ...responseTime, starttime: new Date() });
       setCurrentQuestion(data.question);
       setOptions(data.options);
       setQuestionId(data.questionId);
       setQuizStarted(true);
-      console.log("question received", data.question);
+    });
+
+    socket.on("answer-feedback", async (feedbackData) => {
+      console.log("feedbackData", feedbackData);
+      setAnswerFeedback(feedbackData);
     });
 
     return () => {
@@ -127,7 +166,9 @@ const QuizPlayground = () => {
               ))}
             </div>
             {optionSelected && (
-              <p className="quiz_playground-subheading">Answer Submitted</p>
+              <p className="quiz_playground-subheading">
+                Answer Submitted - {answerFeedback?.responseTime}
+              </p>
             )}
           </div>
         </div>

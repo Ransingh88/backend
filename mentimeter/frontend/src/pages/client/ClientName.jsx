@@ -2,7 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { socket } from "../../utils/socket";
 import { useState } from "react";
-import { setUserName } from "../../redux/features/quizSlice";
+import { setUserId, setUserName } from "../../redux/features/quizSlice";
+import { v4 as uuidv4 } from "uuid";
 
 const ClientName = () => {
   const [clientName, setClientName] = useState("");
@@ -19,6 +20,7 @@ const ClientName = () => {
       userName: clientName,
     });
     dispatch(setUserName(clientName));
+    dispatch(setUserId(uuidv4()));
     console.log("quiz session joined");
     navigate(`/quiz/${sessionCode}/playground`);
   };

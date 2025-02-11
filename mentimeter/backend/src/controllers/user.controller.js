@@ -162,36 +162,100 @@ const quizSessionDelete = async (req, res) => {
   }
 };
 
-const quizResponseSubmit = async (req, res) => {
-  try {
-    const { sessionCode, name, answer } = req.body;
+// const quizResponseSubmit = async (req, res) => {
+//   try {
+//     const { sessionCode, name, answer, userId } = req.body;
 
+//     const isUserExists = await Response.findOne({
+//       $and: [{ userId }, { sessionCode }],
+//     });
+
+//     if (!isUserExists) {
+//       const response = await Response.create({
+//         sessionCode,
+//         name,
+//         userId,
+//         answers: [answer],
+//       });
+//     } else {
+//       const response = await Response.findOneAndUpdate(
+//         {
+//           userId,
+//         },
+//         { $push: { answers: answer } }
+//       );
+//     }
+
+//     res.status(200).json({ message: "response submitted" });
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// };
+
+const quizResponseSubmit = async (
+  sessionCode,
+  name,
+  answer,
+  userId,
+  isAnsCorrect
+) => {
+  console.log("isAnsCorrect", isAnsCorrect);
+  try {
     const isUserExists = await Response.findOne({
-      $and: [{ name }, { sessionCode }],
+      $and: [{ userId }, { sessionCode }],
     });
 
     if (!isUserExists) {
-      const response = await Response.create({
-        sessionCode,
-        name,
-        answers: [answer],
-      });
-
-      console.log("createRes", response);
-    } else {
-      const response = await Response.findOneAndUpdate(
-        {
+      if (isAnsCorrect) {
+        await Response.create({
+          sessionCode,
           name,
-        },
-        { $push: { answers: answer } }
-      );
-
-      console.log("updateRes", response);
+          userId,
+          answers: [{ ...answer, isAnsCorrect }],
+          leaderBoard: answer.points,
+        });
+      } else {
+        await Response.create({
+          sessionCode,
+          name,
+          userId,
+          answers: [{ ...answer, isAnsCorrect }],
+          leaderBoard: 0,
+        });
+      }
+    } else {
+      if (isAnsCorrect) {
+        await Response.findOneAndUpdate(
+          {
+            userId,
+          },
+          {
+            $push: { answers: { ...answer, isAnsCorrect } },
+            $inc: {
+              leaderBoard: answer.points,
+            },
+          },
+          { new: true }
+        );
+      } else {
+        await Response.findOneAndUpdate(
+          {
+            userId,
+          },
+          {
+            $push: { answers: { ...answer, isAnsCorrect } },
+            $inc: {
+              leaderBoard: 0,
+            },
+          },
+          { new: true }
+        );
+      }
     }
 
-    res.status(200).json({ message: "response submitted" });
+    console.log("response submitted");
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    throw new Error(error.message);
   }
 };
 

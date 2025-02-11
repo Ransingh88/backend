@@ -59,12 +59,73 @@ io.on("connection", (socket) => {
     }
   );
 
+  socket.on("submit-answer", async (answerData) => {
+    console.log(answerData);
+
+    const { sessionCode, userId, name, answer } = answerData;
+    const isAnsCorrect = await Session.aggregate([
+      {
+        $match: {
+          sessionCode: sessionCode,
+        },
+      },
+      {
+        $lookup: {
+          from: "quizzes",
+          localField: "quizId",
+          foreignField: "_id",
+          as: "quizDetails",
+        },
+      },
+      {
+        $unwind: "$quizDetails",
+      },
+      {
+        $unwind: "$quizDetails.questions",
+      },
+      {
+        $match: {
+          "quizDetails.questions._id": new mongoose.Types.ObjectId(
+            answer.questionId
+          ),
+        },
+      },
+      {
+        $project: {
+          isCorrect: {
+            $eq: [
+              "$quizDetails.questions.correctOption",
+              answer.selectedOption,
+            ],
+          },
+        },
+      },
+    ]);
+
+    socket.emit("answer-feedback", {
+      isAnsCorrect: isAnsCorrect[0].isCorrect,
+      responseTime: answer.ansResponseTime,
+    });
+
+    // save answer response
+    quizResponseSubmit(
+      sessionCode,
+      name,
+      answer,
+      userId,
+      isAnsCorrect[0].isCorrect
+    );
+  });
+
   socket.on("disconnect", () => {
     console.log("client disconnected X-:", socket.id);
   });
 });
 
 import userRoutes from "./routes/user.routes.js";
+import { Quiz } from "./models/quiz.model.js";
+import { Session } from "./models/session.model.js";
+import { quizResponseSubmit } from "./controllers/user.controller.js";
 
 app.use("/api", userRoutes);
 
